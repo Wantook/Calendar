@@ -21,5 +21,9 @@ https://github.com/user-attachments/assets/cf7f7303-f134-482d-91ea-62b02f02587f
 
 </div>
 
+### Soon to be Features:
+
+* Auto increment for spaced repetitions?
+
 
   
