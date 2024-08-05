@@ -4,7 +4,7 @@
              x:Class="Randomize.MainPage">
     
     
-    <!--Won't be needing this because -->
+    <!--Won't be needing this because our main page is the CalendarPage.xaml -->
 
     <ScrollView>
         <VerticalStackLayout

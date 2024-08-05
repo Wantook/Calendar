@@ -10,35 +10,27 @@
 
     <ContentPage.Resources>
         <ResourceDictionary>
-         
             <Color x:Key="PrimaryColor">#3498db</Color>
-            <Color x:Key="SecondaryColor">#2ecc71</Color>
-            <Color x:Key="BackgroundColor">#ecf0f1</Color>
             <Color x:Key="CardColor">#ffffff</Color>
             <Color x:Key="TextColor">#2c3e50</Color>
-
-           
             <Style x:Key="StyledDatePicker" TargetType="Frame">
                 <Setter Property="BackgroundColor" Value="{StaticResource CardColor}" />
                 <Setter Property="CornerRadius" Value="10" />
                 <Setter Property="Padding" Value="5" />
                 <Setter Property="HasShadow" Value="True" />
             </Style>
-
             <Style x:Key="StyledEntry" TargetType="Frame">
                 <Setter Property="BackgroundColor" Value="{StaticResource CardColor}" />
                 <Setter Property="CornerRadius" Value="10" />
                 <Setter Property="Padding" Value="5" />
                 <Setter Property="HasShadow" Value="True" />
             </Style>
-
             <Style x:Key="StyledEditor" TargetType="Frame">
                 <Setter Property="BackgroundColor" Value="{StaticResource CardColor}" />
                 <Setter Property="CornerRadius" Value="10" />
                 <Setter Property="Padding" Value="5" />
                 <Setter Property="HasShadow" Value="True" />
             </Style>
-
             <Style x:Key="StyledButton" TargetType="Button">
                 <Setter Property="BackgroundColor" Value="{StaticResource PrimaryColor}" />
                 <Setter Property="TextColor" Value="White" />
@@ -49,13 +41,11 @@
                 <Setter Property="BorderColor" Value="{StaticResource PrimaryColor}" />
                 <Setter Property="BorderWidth" Value="1" />
             </Style>
-
             <Style x:Key="EventLabelStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="{StaticResource TextColor}" />
                 <Setter Property="FontSize" Value="14" />
                 <Setter Property="Margin" Value="0,0,0,5" />
             </Style>
-
             <Style x:Key="EventTitleStyle" TargetType="Label">
                 <Setter Property="TextColor" Value="{StaticResource PrimaryColor}" />
                 <Setter Property="FontSize" Value="16" />
@@ -64,58 +54,66 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <ScrollView BackgroundColor="{StaticResource BackgroundColor}">
+    <ScrollView>
         <StackLayout Padding="20" Spacing="15">
-            
-            <Frame Style="{StaticResource StyledDatePicker}">
-                <DatePicker Date="{Binding SelectedDate}" BackgroundColor="{StaticResource CardColor}" />
-            </Frame>
-
-            
-            <Frame Style="{StaticResource StyledEntry}">
-                <Entry Placeholder="Event Title" 
-                       Text="{Binding EventTitle}" 
-                       BackgroundColor="{StaticResource CardColor}" />
-            </Frame>
-
-           
-            <Frame Style="{StaticResource StyledEditor}">
-                <Editor Placeholder="Event Description" 
-                        Text="{Binding EventDescription}" 
-                        BackgroundColor="{StaticResource CardColor}" />
-            </Frame>
-
-        
-            <Button Text="Add Event" 
-                    Command="{Binding AddEventCommand}" 
-                    Style="{StaticResource StyledButton}" />
-
-           
-            <Label Text="Events:" 
+            <Label Text="Select a Date:" 
                    Style="{StaticResource EventTitleStyle}" 
-                   Margin="0,20,0,10" />
+                   Margin="0,0,0,10" />
 
-           
-            <CollectionView ItemsSource="{Binding Events}">
+            <StackLayout Orientation="Horizontal" Spacing="10">
+                <Picker Title="Year" 
+                        ItemsSource="{Binding AvailableYears}" 
+                        SelectedItem="{Binding SelectedYear}" />
+                <Picker Title="Month" 
+                        ItemsSource="{Binding AvailableMonths}" 
+                        SelectedItem="{Binding SelectedMonth}" 
+                        ItemDisplayBinding="{Binding .}" />
+            </StackLayout>
+
+            <CollectionView ItemsSource="{Binding Days}" SelectionMode="Single"
+                            SelectedItem="{Binding SelectedDate}"
+                            SelectionChanged="OnDateSelected">
+                <CollectionView.ItemsLayout>
+                    <GridItemsLayout Orientation="Vertical" Span="7" />
+                </CollectionView.ItemsLayout>
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Frame BackgroundColor="{StaticResource CardColor}" 
-                               CornerRadius="10" 
-                               Padding="10" 
-                               Margin="0,0,0,10" 
-                               HasShadow="True">
-                            <StackLayout>
-                                <Label Text="{Binding Title}" 
-                                       Style="{StaticResource EventTitleStyle}" />
-                                <Label Text="{Binding Description}" 
-                                       Style="{StaticResource EventLabelStyle}" />
-                                <Label Text="{Binding Date, StringFormat='{0:MMMM dd, yyyy}'}" 
-                                       Style="{StaticResource EventLabelStyle}" />
+                        <Frame Style="{StaticResource StyledDatePicker}">
+                            <StackLayout Padding="10">
+                                <Label Text="{Binding Day}" 
+                                       HorizontalOptions="Center" />
+                                <StackLayout>
+                                    <Label Text="{Binding Events[0].Title}" 
+                                           Style="{StaticResource EventLabelStyle}" />
+                                </StackLayout>
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnEventClicked" />
+                                </Frame.GestureRecognizers>
                             </StackLayout>
                         </Frame>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
             </CollectionView>
+
+            <StackLayout Spacing="15">
+                <Frame Style="{StaticResource StyledEntry}">
+                    <Entry Text="{Binding EventTitle}" 
+                           Placeholder="Event Title" />
+                </Frame>
+
+                <Frame Style="{StaticResource StyledEditor}">
+                    <Editor Text="{Binding EventDescription}" 
+                            Placeholder="Event Description" />
+                </Frame>
+
+                <Button Text="Add Event" Command="{Binding AddEventCommand}" 
+                        Style="{StaticResource StyledButton}" />
+            </StackLayout>
+
+            <StackLayout Padding="10">
+                <Label Text="Event Details:" Style="{StaticResource EventTitleStyle}" />
+                <Label Text="{Binding SelectedEventDescription}" />
+            </StackLayout>
         </StackLayout>
     </ScrollView>
 </ContentPage>
