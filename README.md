@@ -31,6 +31,7 @@ https://github.com/user-attachments/assets/70e2012a-81a2-48f2-a16e-3d90a50406ff
 
 * Cannot store the events added yet.
 * Date was not yet fixed. If you move from 2024 to 2023 for example, the note added will remain.
+* Convert to dark background.
 
 
 
