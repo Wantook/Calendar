@@ -5,10 +5,10 @@ using Randomize.Model;
 using Randomize.View;
 using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Globalization;
 using System.Threading.Tasks;
 
 namespace Randomize.ViewModel
@@ -21,7 +21,19 @@ namespace Randomize.ViewModel
         private string _eventDescription;
         private ObservableCollection<Event> _events;
         private ObservableCollection<int> _availableYears;
+
+        public CalendarViewModel(ObservableCollection<int> availableYears)
+        {
+            _availableYears = availableYears;
+        }
+
         private ObservableCollection<string> _availableMonths;
+
+        public CalendarViewModel(ObservableCollection<string> availableMonths)
+        {
+            _availableMonths = availableMonths;
+        }
+
         private DayModel _selectedDay;
 
         public CalendarViewModel()
@@ -202,7 +214,7 @@ namespace Randomize.ViewModel
 
         private async void NavigateToEventDetails(DateTime date)
         {
-            var selectedEvent = Events.FirstOrDefault(e => e.Date == date);
+            var selectedEvent = Events.FirstOrDefault(e => e.Date.Date == date.Date);
             if (selectedEvent != null)
             {
                 var navigationParameter = new Dictionary<string, object>

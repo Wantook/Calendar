@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:Randomize.View"
              xmlns:vm="clr-namespace:Randomize.ViewModel"
-             x:Class="Randomize.View.EventDetailPage">
+             x:Class="Randomize.View.DeleteEventPage">
 
     <ContentPage.BindingContext>
-        <vm:EventDetailViewModel />
+        <vm:DeleteEventViewModel />
     </ContentPage.BindingContext>
 
     <ScrollView>
@@ -16,45 +15,37 @@
             VerticalOptions="Center">
 
             <Label 
-                x:Name="EventDetailsLabel"
-                Text="Event Details"
+                Text="Delete Event"
                 FontSize="32"
                 HorizontalOptions="Center"
-                Opacity="0"
                 FontAttributes="Bold"
                 TextColor="Black"/>
 
-            <Entry 
-                x:Name="EventTitleEntry"
+            <Label 
                 Text="{Binding Event.Title}"
-                Placeholder="Event Title"
                 FontSize="24"
                 HorizontalOptions="Center"
-                Opacity="0"
                 FontAttributes="Bold"
                 TextColor="Black"/>
 
-            <Editor 
-                x:Name="EventDescriptionEditor"
+            <Label 
                 Text="{Binding Event.Description}"
-                Placeholder="Event Description"
                 FontSize="18"
                 HorizontalOptions="Center"
-                Opacity="0"
                 FontAttributes="Italic"
                 TextColor="Gray"/>
 
             <Button 
-                Text="Update" 
-                Command="{Binding UpdateEventAsyncCommand}" 
-                BackgroundColor="Purple"
-                TextColor="Black"/>
-
-            <Button 
                 Text="Delete" 
-                Command="{Binding DeleteEventAsyncCommand}" 
+                Command="{Binding DeleteEventCommand}" 
                 BackgroundColor="Red"
                 TextColor="White"/>
+
+            <Button 
+                Text="Cancel" 
+                Command="{Binding CancelCommand}" 
+                BackgroundColor="White"
+                TextColor="Black"/>
 
         </VerticalStackLayout>
     </ScrollView>

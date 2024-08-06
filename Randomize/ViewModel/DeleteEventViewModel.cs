@@ -2,18 +2,19 @@
 using CommunityToolkit.Mvvm.Input;
 using Randomize.Model;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace Randomize.ViewModel
 {
-    public partial class EventDetailViewModel : ObservableObject
+    public partial class DeleteEventViewModel : ObservableObject
     {
         [ObservableProperty]
         private Event _event;
 
         private ObservableCollection<Event> _events;
 
-        public EventDetailViewModel()
+        public DeleteEventViewModel()
         {
         }
 
@@ -23,15 +24,17 @@ namespace Randomize.ViewModel
         }
 
         [RelayCommand]
-        private async Task NavigateToUpdateAsync()
+        private async Task DeleteEventAsync()
         {
-            await Shell.Current.GoToAsync($"UpdateEventPage?Event={Event}");
+            System.Diagnostics.Debug.WriteLine("DeleteEventAsync called");
+            _events.Remove(Event);
+            await Shell.Current.GoToAsync("//MainPage"); // Change to your desired page
         }
 
         [RelayCommand]
-        private async Task NavigateToDeleteAsync()
+        private async Task CancelAsync()
         {
-            await Shell.Current.GoToAsync($"DeleteEventPage?Event={Event}");
+            await Shell.Current.GoToAsync("//MainPage"); // Change to your desired page
         }
     }
 }

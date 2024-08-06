@@ -1,30 +1,28 @@
 using Microsoft.Maui.Controls;
 using Randomize.Model;
 using Randomize.ViewModel;
-using System;
 using System.Collections.ObjectModel;
-using System.Threading.Tasks;
 
 namespace Randomize.View
 {
     [QueryProperty(nameof(Event), "Event")]
     [QueryProperty(nameof(Events), "Events")]
-    public partial class EventDetailPage : ContentPage
+    public partial class UpdateEventPage : ContentPage
     {
         public Event Event { get; set; }
         public ObservableCollection<Event> Events { get; set; }
 
-        public EventDetailPage()
+        public UpdateEventPage()
         {
             InitializeComponent();
-            BindingContext = new EventDetailViewModel();
+            BindingContext = new UpdateEventViewModel();
         }
 
         protected override void OnAppearing()
         {
             base.OnAppearing();
 
-            if (BindingContext is EventDetailViewModel viewModel)
+            if (BindingContext is UpdateEventViewModel viewModel)
             {
                 if (Event != null)
                 {
@@ -36,17 +34,6 @@ namespace Randomize.View
                     viewModel.InitializeEvents(Events);
                 }
             }
-
-            OnPageAppearing(this, EventArgs.Empty);
-        }
-
-        private async void OnPageAppearing(object sender, EventArgs e)
-        {
-            await Task.WhenAll(
-                EventDetailsLabel.FadeTo(1, 500),
-                EventTitleEntry.FadeTo(1, 500),
-                EventDescriptionEditor.FadeTo(1, 500)
-            );
         }
     }
 }
