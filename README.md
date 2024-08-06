@@ -34,7 +34,7 @@ https://github.com/user-attachments/assets/c1b02b09-ec7d-4982-9608-5061330b3d36
 ### Problem to fix
 
 
-* Date was not yet fixed. If you move from 2024 to 2023 for example, the note added will remain. I just don't know what to do with this. I don't know how I will link the date and time with the app.
+* Date was not yet fixed. If you move from 2024 to 2023 for example, the note added will remain. I just don't know what to do with this. I don't know how I will link the [date and time with the app](https://learn.microsoft.com/en-us/dotnet/maui/user-interface/controls/datepicker?view=net-maui-8.0).
 * Clicking dates would output another view. Done but I will make the UI better.
 
 
