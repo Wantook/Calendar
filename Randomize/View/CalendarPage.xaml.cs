@@ -18,21 +18,8 @@ namespace Randomize.View
             {
                 var viewModel = (CalendarViewModel)BindingContext;
                 viewModel.SelectedDate = selectedDay.Date;
-
-                
+                viewModel.SelectedDay = selectedDay;
                 viewModel.ShowEventDetails();
-            }
-        }
-
-        private async void OnEventClicked(object sender, EventArgs e)
-        {
-            var frame = sender as Frame;
-
-            if (frame != null)
-            {
-                
-                await frame.ScaleTo(1.2, 100, Easing.CubicIn);
-                await frame.ScaleTo(1, 100, Easing.CubicOut);
             }
         }
     }

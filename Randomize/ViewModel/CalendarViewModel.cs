@@ -1,13 +1,15 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Maui.Controls;
+using Randomize.Model;
+using Randomize.View;
 using System;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
-using System.Collections.Generic;
+using System.Text;
 using System.Globalization;
-using Randomize.Model; 
+using System.Threading.Tasks;
 
 namespace Randomize.ViewModel
 {
@@ -20,6 +22,7 @@ namespace Randomize.ViewModel
         private ObservableCollection<Event> _events;
         private ObservableCollection<int> _availableYears;
         private ObservableCollection<string> _availableMonths;
+        private DayModel _selectedDay;
 
         public CalendarViewModel()
         {
@@ -28,15 +31,21 @@ namespace Randomize.ViewModel
             AvailableYears = new ObservableCollection<int>(Enumerable.Range(1900, DateTime.Now.Year - 1899));
             AvailableMonths = new ObservableCollection<string>(DateTimeFormatInfo.CurrentInfo.MonthNames.Where(m => !string.IsNullOrEmpty(m)));
             InitializeDays();
+            LoadEvents();
         }
 
-       
         public ObservableCollection<DayModel> Days { get; set; }
 
         public DateTime SelectedDate
         {
             get => _selectedDate;
             set => SetProperty(ref _selectedDate, value);
+        }
+
+        public DayModel SelectedDay
+        {
+            get => _selectedDay;
+            set => SetProperty(ref _selectedDay, value);
         }
 
         public string SelectedEventDescription
@@ -83,7 +92,6 @@ namespace Randomize.ViewModel
             }
         }
 
-       
         public IRelayCommand AddEventCommand => new RelayCommand(AddEvent);
 
         private void InitializeDays()
@@ -100,21 +108,11 @@ namespace Randomize.ViewModel
                 {
                     Date = currentDate,
                     Day = i,
-                    Events = eventsForDay,
-                    DateTapGestureRecognizer = new TapGestureRecognizer
-                    {
-                        Command = new Command(() => OnDayClicked(currentDate))
-                    }
+                    Events = eventsForDay
                 };
 
                 Days.Add(day);
             }
-        }
-
-        private void OnDayClicked(DateTime date)
-        {
-            SelectedDate = date;
-            ShowEventDetails();
         }
 
         public void ShowEventDetails()
@@ -152,12 +150,15 @@ namespace Randomize.ViewModel
         {
             try
             {
-                var json = JsonSerializer.Serialize(Events);
-                File.WriteAllText(GetFilePath(), json);
+                var sb = new StringBuilder();
+                foreach (var ev in Events)
+                {
+                    sb.AppendLine($"{ev.Date:yyyy-MM-dd}|{ev.Title}|{ev.Description}");
+                }
+                File.WriteAllText(GetFilePath(), sb.ToString());
             }
             catch (Exception ex)
             {
-                
                 Console.WriteLine($"Error saving events: {ex.Message}");
             }
         }
@@ -169,22 +170,47 @@ namespace Randomize.ViewModel
                 var filePath = GetFilePath();
                 if (File.Exists(filePath))
                 {
-                    var json = File.ReadAllText(filePath);
-                    var events = JsonSerializer.Deserialize<ObservableCollection<Event>>(json);
-                    Events = events ?? new ObservableCollection<Event>();
+                    var lines = File.ReadAllLines(filePath);
+                    foreach (var line in lines)
+                    {
+                        var parts = line.Split('|');
+                        if (parts.Length == 3 && DateTime.TryParse(parts[0], out var date))
+                        {
+                            Events.Add(new Event
+                            {
+                                Date = date,
+                                Title = parts[1],
+                                Description = parts[2]
+                            });
+                        }
+                    }
                     InitializeDays();
                 }
             }
             catch (Exception ex)
             {
-               
                 Console.WriteLine($"Error loading events: {ex.Message}");
             }
         }
 
         private string GetFilePath()
         {
-            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "events.json");
+            return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "events.txt");
+        }
+
+        public IRelayCommand<DateTime> NavigateToEventDetailsCommand => new RelayCommand<DateTime>(NavigateToEventDetails);
+
+        private async void NavigateToEventDetails(DateTime date)
+        {
+            var selectedEvent = Events.FirstOrDefault(e => e.Date == date);
+            if (selectedEvent != null)
+            {
+                var navigationParameter = new Dictionary<string, object>
+                {
+                    { "Event", selectedEvent }
+                };
+                await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}", true, navigationParameter);
+            }
         }
     }
 
@@ -193,6 +219,5 @@ namespace Randomize.ViewModel
         public DateTime Date { get; set; }
         public int Day { get; set; }
         public required ObservableCollection<Event> Events { get; set; }
-        public required TapGestureRecognizer DateTapGestureRecognizer { get; set; }
     }
 }

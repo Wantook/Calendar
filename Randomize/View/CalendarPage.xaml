@@ -2,7 +2,9 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:Randomize.ViewModel"
-             x:Class="Randomize.View.CalendarPage">
+             x:Class="Randomize.View.CalendarPage"
+             BackgroundColor="Black"
+             x:Name="contentPage">
 
     <ContentPage.BindingContext>
         <vm:CalendarViewModel />
@@ -11,8 +13,8 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="PrimaryColor">#3498db</Color>
-            <Color x:Key="CardColor">#ffffff</Color>
-            <Color x:Key="TextColor">#2c3e50</Color>
+            <Color x:Key="CardColor">#2c3e50</Color>
+            <Color x:Key="TextColor">#ecf0f1</Color>
             <Style x:Key="StyledDatePicker" TargetType="Frame">
                 <Setter Property="BackgroundColor" Value="{StaticResource CardColor}" />
                 <Setter Property="CornerRadius" Value="10" />
@@ -81,13 +83,14 @@
                         <Frame Style="{StaticResource StyledDatePicker}">
                             <StackLayout Padding="10">
                                 <Label Text="{Binding Day}" 
-                                       HorizontalOptions="Center" />
+                                       HorizontalOptions="Center" 
+                                       TextColor="White" />
                                 <StackLayout>
                                     <Label Text="{Binding Events[0].Title}" 
                                            Style="{StaticResource EventLabelStyle}" />
                                 </StackLayout>
                                 <Frame.GestureRecognizers>
-                                    <TapGestureRecognizer Tapped="OnEventClicked" />
+                                    <TapGestureRecognizer Command="{Binding BindingContext.NavigateToEventDetailsCommand, Source={x:Reference contentPage}}" CommandParameter="{Binding Date}" />
                                 </Frame.GestureRecognizers>
                             </StackLayout>
                         </Frame>
@@ -98,21 +101,20 @@
             <StackLayout Spacing="15">
                 <Frame Style="{StaticResource StyledEntry}">
                     <Entry Text="{Binding EventTitle}" 
-                           Placeholder="Event Title" />
+                           Placeholder="Event Title" 
+                           TextColor="White" 
+                           PlaceholderColor="Gray" />
                 </Frame>
 
                 <Frame Style="{StaticResource StyledEditor}">
                     <Editor Text="{Binding EventDescription}" 
-                            Placeholder="Event Description" />
+                            Placeholder="Event Description" 
+                            TextColor="White" 
+                            PlaceholderColor="Gray" />
                 </Frame>
 
                 <Button Text="Add Event" Command="{Binding AddEventCommand}" 
                         Style="{StaticResource StyledButton}" />
-            </StackLayout>
-
-            <StackLayout Padding="10">
-                <Label Text="Event Details:" Style="{StaticResource EventTitleStyle}" />
-                <Label Text="{Binding SelectedEventDescription}" />
             </StackLayout>
         </StackLayout>
     </ScrollView>
