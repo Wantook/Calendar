@@ -40,7 +40,7 @@ namespace Randomize.ViewModel
         [RelayCommand]
         private async Task CancelAsync()
         {
-            await Shell.Current.GoToAsync("//MainPage"); // Change to your desired page
+            await Shell.Current.GoToAsync("//MainPage"); // kapikon ahhahaha
         }
     }
 }
