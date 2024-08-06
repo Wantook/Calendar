@@ -21,7 +21,11 @@ A Calendar app made using .NET MAUI in an MVVM format.
 <div align="center">
   
 
-https://github.com/user-attachments/assets/70e2012a-81a2-48f2-a16e-3d90a50406ff
+
+
+https://github.com/user-attachments/assets/c1b02b09-ec7d-4982-9608-5061330b3d36
+
+
 
 
 </div>
@@ -29,10 +33,9 @@ https://github.com/user-attachments/assets/70e2012a-81a2-48f2-a16e-3d90a50406ff
 
 ### Problem to fix
 
-* Cannot store the events added yet.
-* Date was not yet fixed. If you move from 2024 to 2023 for example, the note added will remain.
-* Convert to dark background.
-* Clicking dates would output another view.
+
+* Date was not yet fixed. If you move from 2024 to 2023 for example, the note added will remain. I just don't know what to do with this. I don't know how I will link the date and time with the app.
+* Clicking dates would output another view. Done but I will make the UI better.
 
 
 
