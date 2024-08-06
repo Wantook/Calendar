@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Randomize.Model;
+using Randomize.View;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -25,13 +26,39 @@ namespace Randomize.ViewModel
         [RelayCommand]
         private async Task NavigateToUpdateAsync()
         {
-            await Shell.Current.GoToAsync($"UpdateEventPage?Event={Event}");
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Navigating to UpdateEventPage...");
+                var navigationParameter = new Dictionary<string, object>
+                {
+                    { "Event", Event },
+                    { "Events", _events }
+                };
+                await Shell.Current.GoToAsync($"{nameof(UpdateEventPage)}", true, navigationParameter);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error navigating to UpdateEventPage: {ex.Message}");
+            }
         }
 
         [RelayCommand]
         private async Task NavigateToDeleteAsync()
         {
-            await Shell.Current.GoToAsync($"DeleteEventPage?Event={Event}");
+            try
+            {
+                System.Diagnostics.Debug.WriteLine("Navigating to DeleteEventPage...");
+                var navigationParameter = new Dictionary<string, object>
+                {
+                    { "Event", Event },
+                    { "Events", _events }
+                };
+                await Shell.Current.GoToAsync($"{nameof(DeleteEventPage)}", true, navigationParameter);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error navigating to DeleteEventPage: {ex.Message}");
+            }
         }
     }
 }

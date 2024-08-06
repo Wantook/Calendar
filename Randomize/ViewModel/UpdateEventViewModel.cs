@@ -26,21 +26,55 @@ namespace Randomize.ViewModel
         [RelayCommand]
         private async Task SaveEventAsync()
         {
-            System.Diagnostics.Debug.WriteLine("SaveEventAsync called");
-            var existingEvent = _events.FirstOrDefault(e => e.Date == Event.Date && e.Title == Event.Title);
-            if (existingEvent != null)
+            try
             {
-                existingEvent.Title = Event.Title;
-                existingEvent.Description = Event.Description;
-                OnPropertyChanged(nameof(_events));
+                var existingEvent = _events.FirstOrDefault(e => e.Date == Event.Date && e.Title == Event.Title);
+                if (existingEvent != null)
+                {
+                    existingEvent.Title = Event.Title;
+                    existingEvent.Description = Event.Description;
+                }
+
+                
+                SaveEvents();
+
+                
+                await Shell.Current.GoToAsync("..");
             }
-            await Shell.Current.GoToAsync("//MainPage"); // Change to your desired page
+            catch (Exception ex)
+            {
+                
+                System.Diagnostics.Debug.WriteLine($"Error saving event: {ex.Message}");
+            }
         }
 
         [RelayCommand]
         private async Task CancelAsync()
         {
-            await Shell.Current.GoToAsync("//MainPage"); // Change to your desired page
+            
+            await Shell.Current.GoToAsync("..");
+        }
+
+        private void SaveEvents()
+        {
+            try
+            {
+                var sb = new System.Text.StringBuilder();
+                foreach (var ev in _events)
+                {
+                    sb.AppendLine($"{ev.Date:yyyy-MM-dd}|{ev.Title}|{ev.Description}");
+                }
+                System.IO.File.WriteAllText(GetFilePath(), sb.ToString());
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine($"Error saving events: {ex.Message}");
+            }
+        }
+
+        private string GetFilePath()
+        {
+            return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "events.txt");
         }
     }
 }

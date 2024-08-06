@@ -1,4 +1,5 @@
 using Microsoft.Maui.Controls;
+using Randomize.Model;
 using Randomize.ViewModel;
 using System;
 using System.Linq;

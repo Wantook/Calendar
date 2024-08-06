@@ -10,52 +10,16 @@
     </ContentPage.BindingContext>
 
     <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
+        <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+            <Label Text="Event Details" FontSize="32" HorizontalOptions="Center" FontAttributes="Bold" TextColor="Black"/>
 
-            <Label 
-                x:Name="EventDetailsLabel"
-                Text="Event Details"
-                FontSize="32"
-                HorizontalOptions="Center"
-                Opacity="0"
-                FontAttributes="Bold"
-                TextColor="Black"/>
+            <Label Text="{Binding Event.Title}" FontSize="24" HorizontalOptions="Center" FontAttributes="Bold" TextColor="Black"/>
 
-            <Entry 
-                x:Name="EventTitleEntry"
-                Text="{Binding Event.Title}"
-                Placeholder="Event Title"
-                FontSize="24"
-                HorizontalOptions="Center"
-                Opacity="0"
-                FontAttributes="Bold"
-                TextColor="Black"/>
+            <Label Text="{Binding Event.Description}" FontSize="18" HorizontalOptions="Center" FontAttributes="Italic" TextColor="Gray"/>
 
-            <Editor 
-                x:Name="EventDescriptionEditor"
-                Text="{Binding Event.Description}"
-                Placeholder="Event Description"
-                FontSize="18"
-                HorizontalOptions="Center"
-                Opacity="0"
-                FontAttributes="Italic"
-                TextColor="Gray"/>
+            <Button Text="Update" Command="{Binding NavigateToUpdateCommand}" BackgroundColor="Purple" TextColor="White"/>
 
-            <Button 
-                Text="Update" 
-                Command="{Binding UpdateEventAsyncCommand}" 
-                BackgroundColor="Purple"
-                TextColor="Black"/>
-
-            <Button 
-                Text="Delete" 
-                Command="{Binding DeleteEventAsyncCommand}" 
-                BackgroundColor="Red"
-                TextColor="White"/>
-
+            <Button Text="Delete" Command="{Binding NavigateToDeleteCommand}" BackgroundColor="Red" TextColor="White"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

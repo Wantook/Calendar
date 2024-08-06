@@ -26,15 +26,57 @@ namespace Randomize.ViewModel
         [RelayCommand]
         private async Task DeleteEventAsync()
         {
-            System.Diagnostics.Debug.WriteLine("DeleteEventAsync called");
+            // Check if Event and _events are properly initialized
+            if (Event == null || _events == null)
+            {
+                System.Console.WriteLine("Event or _events is null.");
+                return;
+            }
+
             _events.Remove(Event);
-            await Shell.Current.GoToAsync("//MainPage"); // Change to your desired page
+
+            
+            SaveEvents();
+
+            
+            var calendarViewModel = Shell.Current.BindingContext as CalendarViewModel;
+            if (calendarViewModel == null)
+            {
+                System.Console.WriteLine("CalendarViewModel is null.");
+                return;
+            }
+            calendarViewModel.RemoveEvent(Event);
+
+            
+            await Shell.Current.GoToAsync("//CalendarPage");
         }
 
         [RelayCommand]
         private async Task CancelAsync()
         {
-            await Shell.Current.GoToAsync("//MainPage"); // Change to your desired page
+            await Shell.Current.GoToAsync("//CalendarPage");
+        }
+
+        private void SaveEvents()
+        {
+            try
+            {
+                var sb = new System.Text.StringBuilder();
+                foreach (var ev in _events)
+                {
+                    sb.AppendLine($"{ev.Date:yyyy-MM-dd}|{ev.Title}|{ev.Description}");
+                }
+                System.IO.File.WriteAllText(GetFilePath(), sb.ToString());
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine($"Error saving events: {ex.Message}");
+            }
+        }
+
+        private string GetFilePath()
+        {
+            return System.IO.Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "events.txt");
         }
     }
 }

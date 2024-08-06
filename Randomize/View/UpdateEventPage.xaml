@@ -9,46 +9,16 @@
     </ContentPage.BindingContext>
 
     <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
+        <VerticalStackLayout Spacing="25" Padding="30,0" VerticalOptions="Center">
+            <Label Text="Update Event" FontSize="32" HorizontalOptions="Center" FontAttributes="Bold" TextColor="Black"/>
 
-            <Label 
-                Text="Update Event"
-                FontSize="32"
-                HorizontalOptions="Center"
-                FontAttributes="Bold"
-                TextColor="Black"/>
+            <Entry Text="{Binding Event.Title}" Placeholder="Event Title" FontSize="24" HorizontalOptions="Center" FontAttributes="Bold" TextColor="Black"/>
 
-            <Entry 
-                Text="{Binding Event.Title}"
-                Placeholder="Event Title"
-                FontSize="24"
-                HorizontalOptions="Center"
-                FontAttributes="Bold"
-                TextColor="Black"/>
+            <Editor Text="{Binding Event.Description}" Placeholder="Event Description" FontSize="18" HorizontalOptions="Center" FontAttributes="Italic" TextColor="Gray"/>
 
-            <Editor 
-                Text="{Binding Event.Description}"
-                Placeholder="Event Description"
-                FontSize="18"
-                HorizontalOptions="Center"
-                FontAttributes="Italic"
-                TextColor="Gray"/>
+            <Button Text="Save" Command="{Binding SaveEventCommand}" BackgroundColor="Green" TextColor="White"/>
 
-            <Button 
-                Text="Save" 
-                Command="{Binding SaveEventCommand}" 
-                BackgroundColor="White"
-                TextColor="Black"/>
-
-            <Button 
-                Text="Cancel" 
-                Command="{Binding CancelCommand}" 
-                BackgroundColor="Red"
-                TextColor="White"/>
-
+            <Button Text="Cancel" Command="{Binding CancelCommand}" BackgroundColor="Red" TextColor="White"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

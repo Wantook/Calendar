@@ -1,7 +1,6 @@
 using Microsoft.Maui.Controls;
 using Randomize.Model;
 using Randomize.ViewModel;
-using System;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
@@ -36,17 +35,6 @@ namespace Randomize.View
                     viewModel.InitializeEvents(Events);
                 }
             }
-
-            OnPageAppearing(this, EventArgs.Empty);
-        }
-
-        private async void OnPageAppearing(object sender, EventArgs e)
-        {
-            await Task.WhenAll(
-                EventDetailsLabel.FadeTo(1, 500),
-                EventTitleEntry.FadeTo(1, 500),
-                EventDescriptionEditor.FadeTo(1, 500)
-            );
         }
     }
 }

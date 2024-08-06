@@ -61,6 +61,9 @@
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Plugin.Maui.Calendar" Version="1.2.0" />
+		<PackageReference Include="Syncfusion.Blazor.Calendars" Version="26.2.8" />
+		<PackageReference Include="System.Globalization.Calendars" Version="4.3.0" />
 	</ItemGroup>
 
 	<ItemGroup>

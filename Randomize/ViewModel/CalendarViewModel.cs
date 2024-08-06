@@ -1,6 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 using Randomize.Model;
 using Randomize.View;
 using System;
@@ -15,83 +14,45 @@ namespace Randomize.ViewModel
 {
     public partial class CalendarViewModel : ObservableObject
     {
-        private DateTime _selectedDate;
-        private string _selectedEventDescription;
-        private string _eventTitle;
-        private string _eventDescription;
-        private ObservableCollection<Event> _events;
-        private ObservableCollection<int> _availableYears;
+        [ObservableProperty]
+        private DateTime selectedDate;
 
-        public CalendarViewModel(ObservableCollection<int> availableYears)
-        {
-            _availableYears = availableYears;
-        }
+        [ObservableProperty]
+        private DayModel selectedDay;
 
-        private ObservableCollection<string> _availableMonths;
+        [ObservableProperty]
+        private string eventTitle;
 
-        public CalendarViewModel(ObservableCollection<string> availableMonths)
-        {
-            _availableMonths = availableMonths;
-        }
+        [ObservableProperty]
+        private string eventDescription;
 
-        private DayModel _selectedDay;
+        public ObservableCollection<DayModel> Days { get; private set; }
+        public ObservableCollection<Event> Events { get; private set; }
+        public ObservableCollection<int> AvailableYears { get; private set; }
+        public ObservableCollection<string> AvailableMonths { get; private set; }
 
         public CalendarViewModel()
         {
-            _events = new ObservableCollection<Event>();
             Days = new ObservableCollection<DayModel>();
+            Events = new ObservableCollection<Event>();
             AvailableYears = new ObservableCollection<int>(Enumerable.Range(1900, DateTime.Now.Year - 1899));
             AvailableMonths = new ObservableCollection<string>(DateTimeFormatInfo.CurrentInfo.MonthNames.Where(m => !string.IsNullOrEmpty(m)));
             InitializeDays();
             LoadEvents();
         }
 
-        public ObservableCollection<DayModel> Days { get; set; }
-
-        public DateTime SelectedDate
-        {
-            get => _selectedDate;
-            set => SetProperty(ref _selectedDate, value);
-        }
-
-        public DayModel SelectedDay
-        {
-            get => _selectedDay;
-            set => SetProperty(ref _selectedDay, value);
-        }
-
-        public string SelectedEventDescription
-        {
-            get => _selectedEventDescription;
-            set => SetProperty(ref _selectedEventDescription, value);
-        }
-
-        public string EventTitle
-        {
-            get => _eventTitle;
-            set => SetProperty(ref _eventTitle, value);
-        }
-
-        public string EventDescription
-        {
-            get => _eventDescription;
-            set => SetProperty(ref _eventDescription, value);
-        }
-
-        public ObservableCollection<Event> Events
-        {
-            get => _events;
-            set => SetProperty(ref _events, value);
-        }
-
-        public ObservableCollection<int> AvailableYears { get; set; }
-
-        public ObservableCollection<string> AvailableMonths { get; set; }
-
         public int SelectedYear
         {
             get => SelectedDate.Year;
-            set => SetProperty(ref _selectedDate, new DateTime(value, SelectedDate.Month, 1));
+            set
+            {
+                if (value != SelectedDate.Year)
+                {
+                    var newDate = new DateTime(value, SelectedDate.Month, SelectedDate.Day);
+                    SelectedDate = newDate;
+                    InitializeDays();
+                }
+            }
         }
 
         public string SelectedMonth
@@ -99,12 +60,48 @@ namespace Randomize.ViewModel
             get => SelectedDate.ToString("MMMM");
             set
             {
-                var monthNumber = DateTime.ParseExact(value, "MMMM", null).Month;
-                SetProperty(ref _selectedDate, new DateTime(SelectedDate.Year, monthNumber, 1));
+                if (DateTime.TryParseExact(value, "MMMM", CultureInfo.CurrentCulture, DateTimeStyles.None, out var newDate))
+                {
+                    if (newDate.Month != SelectedDate.Month)
+                    {
+                        SelectedDate = new DateTime(SelectedDate.Year, newDate.Month, SelectedDate.Day);
+                        InitializeDays();
+                    }
+                }
             }
         }
 
-        public IRelayCommand AddEventCommand => new RelayCommand(AddEvent);
+        [RelayCommand]
+        private void AddEvent()
+        {
+            if (!string.IsNullOrWhiteSpace(EventTitle) && !string.IsNullOrWhiteSpace(EventDescription))
+            {
+                var newEvent = new Event
+                {
+                    Title = EventTitle,
+                    Description = EventDescription,
+                    Date = SelectedDate
+                };
+
+                Events.Add(newEvent);
+                SaveEvents();
+                InitializeDays();
+            }
+        }
+
+        [RelayCommand]
+        private async Task NavigateToEventDetails(DateTime date)
+        {
+            var selectedEvent = Events.FirstOrDefault(e => e.Date.Date == date.Date);
+            if (selectedEvent != null)
+            {
+                var navigationParameter = new Dictionary<string, object>
+                {
+                    { "Event", selectedEvent }
+                };
+                await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}", true, navigationParameter);
+            }
+        }
 
         private void InitializeDays()
         {
@@ -127,37 +124,6 @@ namespace Randomize.ViewModel
             }
         }
 
-        public void ShowEventDetails()
-        {
-            var day = Days.FirstOrDefault(d => d.Date.Date == SelectedDate.Date);
-            if (day != null && day.Events.Any())
-            {
-                var eventDescriptions = day.Events.Select(e => e.Description);
-                SelectedEventDescription = string.Join(Environment.NewLine, eventDescriptions);
-            }
-            else
-            {
-                SelectedEventDescription = string.Empty;
-            }
-        }
-
-        private void AddEvent()
-        {
-            if (string.IsNullOrWhiteSpace(EventTitle) || string.IsNullOrWhiteSpace(EventDescription))
-                return;
-
-            var newEvent = new Event
-            {
-                Title = EventTitle,
-                Description = EventDescription,
-                Date = SelectedDate
-            };
-
-            Events.Add(newEvent);
-            SaveEvents();
-            InitializeDays();
-        }
-
         private void SaveEvents()
         {
             try
@@ -175,7 +141,7 @@ namespace Randomize.ViewModel
             }
         }
 
-        public void LoadEvents()
+        private void LoadEvents()
         {
             try
             {
@@ -210,26 +176,32 @@ namespace Randomize.ViewModel
             return Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "events.txt");
         }
 
-        public IRelayCommand<DateTime> NavigateToEventDetailsCommand => new RelayCommand<DateTime>(NavigateToEventDetails);
-
-        private async void NavigateToEventDetails(DateTime date)
+        internal void ShowEventDetails()
         {
-            var selectedEvent = Events.FirstOrDefault(e => e.Date.Date == date.Date);
-            if (selectedEvent != null)
+            if (SelectedDay != null)
             {
-                var navigationParameter = new Dictionary<string, object>
-                {
-                    { "Event", selectedEvent }
-                };
-                await Shell.Current.GoToAsync($"{nameof(EventDetailPage)}", true, navigationParameter);
+                var eventDescriptions = SelectedDay.Events.Select(e => e.Description);
+                EventDescription = string.Join(Environment.NewLine, eventDescriptions);
+            }
+            else
+            {
+                EventDescription = string.Empty;
             }
         }
-    }
 
-    public class DayModel : ObservableObject
-    {
-        public DateTime Date { get; set; }
-        public int Day { get; set; }
-        public required ObservableCollection<Event> Events { get; set; }
+        public void RemoveEvent(Event eventToRemove)
+        {
+            var dayModel = Days.FirstOrDefault(d => d.Date.Date == eventToRemove.Date.Date);
+            if (dayModel != null)
+            {
+                var eventInDay = dayModel.Events.FirstOrDefault(e => e.Title == eventToRemove.Title && e.Description == eventToRemove.Description);
+                if (eventInDay != null)
+                {
+                    dayModel.Events.Remove(eventInDay);
+                    Events.Remove(eventToRemove);
+                    SaveEvents();
+                }
+            }
+        }
     }
 }
