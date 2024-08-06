@@ -12,7 +12,9 @@
 
 ### Overview
 
-A Calendar app made using .NET MAUI in an MVVM format.
+A Calendar app made using .NET MAUI in an MVVM format
+
+I hate this lol
 
 
 
